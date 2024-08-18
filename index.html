@@ -318,9 +318,9 @@
             },
             body: JSON.stringify(data)
         });
-        console.log("Отправлено")
+
         const result = await response.json();
-        console.log("Отправлено")
+
         if (response.ok && result.success) {
             document.querySelector('.container h2').textContent = "Данные успешно обновлены!";
             document.querySelector('.container h2').style.color = 'green';
