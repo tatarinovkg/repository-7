@@ -184,73 +184,6 @@
     tg.MainButton.setText("Отправить");
     tg.MainButton.show();
 
-    let userId = tg.initDataUnsafe.user.id;
-
-    const fetchOwnerData = async () => {
-        try {
-            const response = await fetch('https://louse-precious-sincerely.ngrok-free.app/api/check_owner', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ userId: userId })
-            });
-            const data = await response.json();
-            const h2 = document.querySelector('h2');
-            const formGroups = document.querySelectorAll('.form-group');
-            const submitButton = document.querySelector('.submit-button');
-            const errorMessage = document.getElementById('error-message');
-            const notOwnerMessage = document.getElementById('not-owner-message');
-            const classIDSpan = document.getElementById('classID');
-            const classIDContainer = document.querySelector('.class-id-container');
-
-            if (data.is_owner) {
-                // Если пользователь владелец, подставляем данные в поля
-                document.getElementById('className').value = data.data.class;
-                document.getElementById('schoolName').value = data.data.school;
-                document.getElementById('cityName').value = data.data.city;
-                document.getElementById('schoolShift').value = data.data.shift;
-                document.getElementById('nickname').value = data.data.nickname;
-
-                // Устанавливаем значение classID и отображаем его
-                if (classIDSpan) {
-                    classIDSpan.textContent = data.data.classID;
-                    classIDContainer.style.display = 'block';
-                    classIDContainer.style.opacity = 1; // Делаем видимым сразу
-                    classIDContainer.style.transform = 'translateY(0)'; // Убираем смещение
-                }
-
-                if (h2) h2.style.display = 'block';
-                formGroups.forEach(element => element.style.display = 'block');
-                if (submitButton) submitButton.style.display = 'block';
-                if (errorMessage) errorMessage.style.display = 'none';
-                if (notOwnerMessage) notOwnerMessage.style.display = 'none';
-            } else {
-                if (h2) h2.style.display = 'none';
-                formGroups.forEach(element => element.style.display = 'none');
-                if (submitButton) submitButton.style.display = 'none';
-                if (notOwnerMessage) notOwnerMessage.style.display = 'block';
-                if (errorMessage) errorMessage.style.display = 'none';
-            }
-        } catch (error) {
-            const h2 = document.querySelector('h2');
-            const formGroups = document.querySelectorAll('.form-group');
-            const submitButton = document.querySelector('.submit-button');
-            const errorMessage = document.getElementById('error-message');
-            const notOwnerMessage = document.getElementById('not-owner-message');
-
-            if (h2) h2.style.display = 'none';
-            formGroups.forEach(element => element.style.display = 'none');
-            if (submitButton) submitButton.style.display = 'none';
-            if (errorMessage) errorMessage.style.display = 'block';
-            if (notOwnerMessage) notOwnerMessage.style.display = 'none';
-
-            console.error('Произошла ошибка, попробуйте позже');
-        }
-    };
-
-    fetchOwnerData();
-
     tg.MainButton.onClick(async function() {
     const className = document.getElementById('className').value;
     const schoolName = document.getElementById('schoolName').value;
@@ -333,6 +266,8 @@
             document.querySelector('.container h2').style.color = 'green';
             document.querySelector('.container h2').style.display = 'block';
             document.getElementById('form-content').style.display = 'none';
+            tg.MainButton.setText("Закрыть приложение");
+            tg.MainButton.onClick(tg.close);
         } else {
             const errorMessage = document.getElementById('error-message');
             errorMessage.textContent = result.error || "Произошла ошибка";
@@ -346,7 +281,77 @@
         errorMessage.style.display = 'block';
         errorMessage.style.animation = 'fadeIn 1s ease-in-out';
     }
-});
+    });
+
+    
+    let userId = tg.initDataUnsafe.user.id;
+
+    const fetchOwnerData = async () => {
+        try {
+            const response = await fetch('https://louse-precious-sincerely.ngrok-free.app/api/check_owner', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ userId: userId })
+            });
+            const data = await response.json();
+            const h2 = document.querySelector('h2');
+            const formGroups = document.querySelectorAll('.form-group');
+            const submitButton = document.querySelector('.submit-button');
+            const errorMessage = document.getElementById('error-message');
+            const notOwnerMessage = document.getElementById('not-owner-message');
+            const classIDSpan = document.getElementById('classID');
+            const classIDContainer = document.querySelector('.class-id-container');
+
+            if (data.is_owner) {
+                // Если пользователь владелец, подставляем данные в поля
+                document.getElementById('className').value = data.data.class;
+                document.getElementById('schoolName').value = data.data.school;
+                document.getElementById('cityName').value = data.data.city;
+                document.getElementById('schoolShift').value = data.data.shift;
+                document.getElementById('nickname').value = data.data.nickname;
+
+                // Устанавливаем значение classID и отображаем его
+                if (classIDSpan) {
+                    classIDSpan.textContent = data.data.classID;
+                    classIDContainer.style.display = 'block';
+                    classIDContainer.style.opacity = 1; // Делаем видимым сразу
+                    classIDContainer.style.transform = 'translateY(0)'; // Убираем смещение
+                }
+
+                if (h2) h2.style.display = 'block';
+                formGroups.forEach(element => element.style.display = 'block');
+                if (submitButton) submitButton.style.display = 'block';
+                if (errorMessage) errorMessage.style.display = 'none';
+                if (notOwnerMessage) notOwnerMessage.style.display = 'none';
+            } else {
+                if (h2) h2.style.display = 'none';
+                formGroups.forEach(element => element.style.display = 'none');
+                if (submitButton) submitButton.style.display = 'none';
+                if (notOwnerMessage) notOwnerMessage.style.display = 'block';
+                if (errorMessage) errorMessage.style.display = 'none';
+            }
+        } catch (error) {
+            const h2 = document.querySelector('h2');
+            const formGroups = document.querySelectorAll('.form-group');
+            const submitButton = document.querySelector('.submit-button');
+            const errorMessage = document.getElementById('error-message');
+            const notOwnerMessage = document.getElementById('not-owner-message');
+
+            if (h2) h2.style.display = 'none';
+            formGroups.forEach(element => element.style.display = 'none');
+            if (submitButton) submitButton.style.display = 'none';
+            if (errorMessage) errorMessage.style.display = 'block';
+            if (notOwnerMessage) notOwnerMessage.style.display = 'none';
+
+            console.error('Произошла ошибка, попробуйте позже');
+        }
+    };
+
+    fetchOwnerData();
+
+
 
     function validateClassName() {
         const input = document.getElementById('className');
