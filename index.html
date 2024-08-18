@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Создание класса</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background-color: #f0f0f5;
+            padding: 20px;
+            box-sizing: border-box;
+            margin: 0;
+        }
+        .container {
+            max-width: 90%;
+            margin: 0 auto;
+            text-align: center;
+        }
+        .container h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            font-weight: bold;
+            color: #000000;
+            animation: fadeIn 1s ease-in-out;
+            display: none; /* Скрываем заголовок по умолчанию */
+        }
+        .form-group {
+            margin-bottom: 20px;
+            animation: fadeInUp 0.5s ease-in-out;
+            display: none; /* Скрываем элементы формы по умолчанию */
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #333333;
+        }
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            box-sizing: border-box;
+            font-size: 16px;
+            transition: border-color 0.5s ease;
+        }
+        .form-group input:focus,
+        .form-group select:focus {
+            border-color: #007bff;
+            outline: none;
+            box-shadow: none;
+        }
+        .form-group input.error,
+        .form-group select.error {
+            border-color: #ff0000;
+        }
+        .submit-button {
+            width: 100%;
+            padding: 15px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+            animation: fadeInUp 0.5s ease-in-out;
+            margin-top: 20px; /* Добавлено для отступа сверху */
+            display: none; /* Скрываем кнопку по умолчанию */
+        }
+        .submit-button:hover {
+            background-color: #0056b3;
+        }
+        .instructions {
+            font-size: 12px;
+            color: #666666;
+            margin-top: -5px;
+            margin-bottom: 10px;
+        }
+        .error-message {
+            color: red;
+            font-weight: bold;
+            display: none; /* Скрываем сообщение об ошибке по умолчанию */
+            margin-top: 20px;
+        }
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        @media (max-width: 600px) {
+            body {
+                padding: 10px;
+            }
+            .container {
+                width: 100%;
+                max-width: none;
+                height: auto;
+                padding-bottom: 20px;
+            }
+            .form-group input,
+            .form-group select {
+                font-size: 14px;
+                padding: 10px;
+            }
+            .submit-button {
+                font-size: 14px;
+                padding: 12px;
+            }
+        }
+    </style>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+</head>
+<body>
+<div class="container">
+    <h2>Введите данные</h2>
+    <div id="form-content">
+        <div class="form-group">
+            <label for="className">Введите название класса</label>
+            <input type="text" id="className" name="className" placeholder="Название класса" oninput="validateClassName()" onkeydown="handleEnter(event)">
+        </div>
+        <div class="form-group">
+            <label for="schoolName">Введите название школы</label>
+            <input type="text" id="schoolName" name="schoolName" placeholder="Название школы" oninput="validateSchoolName()" onkeydown="handleEnter(event)">
+        </div>
+        <div class="form-group">
+            <label for="cityName">Введите название города</label>
+            <input type="text" id="cityName" name="cityName" placeholder="Название города" oninput="validateCityName()" onkeydown="handleEnter(event)">
+        </div>
+        <div class="form-group">
+            <label for="schoolShift">Введите смену класса (1-ая или 2-ая)</label>
+            <select id="schoolShift" name="schoolShift" onchange="validateSchoolShift()">
+                <option value="">Выберите смену</option>
+                <option value="1">1-ая смена</option>
+                <option value="2">2-ая смена</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="nickname">Введите никнейм</label>
+            <div class="instructions">Используйте только латинские буквы, цифры и подчеркивание (_).</div>
+            <input type="text" id="nickname" name="nickname" maxlength="16" oninput="ensureValidChars()" value="@" onkeydown="handleEnter(event)">
+        </div>
+    </div>
+    <div id="error-message" class="error-message">Произошла ошибка</div>
+    <div id="not-owner-message" class="error-message">Вы не являетесь владельцем класса.</div>
+</div>
+
+<script>
+    let tg = window.Telegram.WebApp;
+
+    tg.expand();
+    tg.MainButton.setText("Отправить");
+    tg.MainButton.show();
+
+    let userId = tg.initDataUnsafe.user.id;
+
+    // Сначала скрываем все элементы
+    const container = document.querySelector('.container');
+    if (container) container.style.display = 'none';
+
+    fetch('https://louse-precious-sincerely.ngrok-free.app/api/check_owner', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ userId: userId })
+    })
+        .then(response => response.json())
+        .then(data => {
+            // Показываем контейнер после завершения проверки
+            if (container) container.style.display = 'block';
+
+            const h2 = document.querySelector('h2');
+            const formGroups = document.querySelectorAll('.form-group');
+            const submitButton = document.querySelector('.submit-button');
+            const errorMessage = document.getElementById('error-message');
+            const notOwnerMessage = document.getElementById('not-owner-message');
+
+            if (data.is_owner) {
+                // Если пользователь владелец, подставляем данные в поля
+                document.getElementById('className').value = data.data.class;
+                document.getElementById('schoolName').value = data.data.school;
+                document.getElementById('cityName').value = data.data.city;
+                document.getElementById('schoolShift').value = data.data.shift;
+                document.getElementById('nickname').value = data.data.nickname;
+
+                if (h2) h2.style.display = 'block';
+                formGroups.forEach(element => element.style.display = 'block');
+                if (submitButton) submitButton.style.display = 'block';
+                if (errorMessage) errorMessage.style.display = 'none';
+                if (notOwnerMessage) notOwnerMessage.style.display = 'none';
+            } else {
+                if (h2) h2.style.display = 'none';
+                formGroups.forEach(element => element.style.display = 'none');
+                if (submitButton) submitButton.style.display = 'none';
+                if (notOwnerMessage) notOwnerMessage.style.display = 'block';
+                if (errorMessage) errorMessage.style.display = 'none';
+            }
+        })
+        .catch(error => {
+            // В случае ошибки скрываем форму и заголовок, показываем сообщение об ошибке
+            const h2 = document.querySelector('h2');
+            const formGroups = document.querySelectorAll('.form-group');
+            const submitButton = document.querySelector('.submit-button');
+            const errorMessage = document.getElementById('error-message');
+            const notOwnerMessage = document.getElementById('not-owner-message');
+
+            if (h2) h2.style.display = 'none';
+            formGroups.forEach(element => element.style.display = 'none');
+            if (submitButton) submitButton.style.display = 'none';
+            if (errorMessage) errorMessage.style.display = 'block';
+            if (notOwnerMessage) notOwnerMessage.style.display = 'none';
+
+            console.error('Произошла ошибка, попробуйте позже');
+        });
+
+    tg.MainButton.onClick(function() {
+        const className = document.getElementById('className').value;
+        const schoolName = document.getElementById('schoolName').value;
+        const cityName = document.getElementById('cityName').value;
+        const schoolShift = document.getElementById('schoolShift').value;
+        const nickname = document.getElementById('nickname').value;
+
+        let hasError = false;
+
+        if (!className) {
+            document.getElementById('className').classList.add('error');
+            hasError = true;
+        } else {
+            document.getElementById('className').classList.remove('error');
+        }
+
+        if (!schoolName) {
+            document.getElementById('schoolName').classList.add('error');
+            hasError = true;
+        } else {
+            document.getElementById('schoolName').classList.remove('error');
+        }
+
+        if (!cityName) {
+            document.getElementById('cityName').classList.add('error');
+            hasError = true;
+        } else {
+            document.getElementById('cityName').classList.remove('error');
+        }
+
+        if (!schoolShift) {
+            document.getElementById('schoolShift').classList.add('error');
+            hasError = true;
+        } else {
+            document.getElementById('schoolShift').classList.remove('error');
+        }
+
+        if (nickname.length < 2) {
+            document.getElementById('nickname').classList.add('error');
+            hasError = true;
+        } else {
+            document.getElementById('nickname').classList.remove('error');
+        }
+
+        if (hasError) {
+            return;
+        }
+
+        const data = {
+            appId: 'creatingClass',
+            className: className,
+            schoolName: schoolName,
+            cityName: cityName,
+            schoolShift: schoolShift,
+            nickname: nickname
+        };
+
+        // Отправка данных в Web App
+        tg.sendData(JSON.stringify(data));
+
+        // Закрытие окна Web App
+        tg.close();
+    });
+
+    function validateClassName() {
+        const input = document.getElementById('className');
+        let value = input.value;
+        value = value.replace(/^\s+/, '').replace(/\s{2,}/g, ' ');
+        input.value = value;
+    }
+
+    function validateSchoolName() {
+        const input = document.getElementById('schoolName');
+        let value = input.value;
+        value = value.replace(/^\s+/, '').replace(/\s{2,}/g, ' ');
+        input.value = value;
+    }
+
+    function validateCityName() {
+        const input = document.getElementById('cityName');
+        let value = input.value;
+        value = value.replace(/^\s+/, '').replace(/\s{2,}/g, ' ');
+        input.value = value;
+    }
+
+    function validateSchoolShift() {
+        const select = document.getElementById('schoolShift');
+        if (select.value === "") {
+            select.classList.add('error');
+        } else {
+            select.classList.remove('error');
+        }
+    }
+
+    function ensureValidChars() {
+        const nicknameInput = document.getElementById('nickname');
+        let value = nicknameInput.value;
+
+        // Удалить все символы, кроме латиницы, цифр и подчеркивания, и следить за максимальной длиной
+        value = '@' + value.slice(1).replace(/[^a-zA-Z0-9_]/g, '').slice(0, 15);
+
+        nicknameInput.value = value;
+    }
+
+    function handleEnter(event) {
+        if (event.key === "Enter") {
+            event.target.blur(); // Скрыть клавиатуру после нажатия Enter
+        }
+    }
+</script>
+</body>
+</html>
