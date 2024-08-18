@@ -333,8 +333,6 @@
             document.querySelector('.container h2').style.color = 'green';
             document.querySelector('.container h2').style.display = 'block';
             document.getElementById('form-content').style.display = 'none';
-            tg.MainButton.setText("Закрыть приложение");
-            tg.MainButton.onClick(tg.close);
         } else {
             const errorMessage = document.getElementById('error-message');
             errorMessage.textContent = result.error || "Произошла ошибка";
