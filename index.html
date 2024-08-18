@@ -252,94 +252,96 @@
     fetchOwnerData();
 
     tg.MainButton.onClick(async function() {
-        const className = document.getElementById('className').value;
-        const schoolName = document.getElementById('schoolName').value;
-        const cityName = document.getElementById('cityName').value;
-        const schoolShift = document.getElementById('schoolShift').value;
-        const nickname = document.getElementById('nickname').value;
-        const classID = document.getElementById('classID').textContent;
+    const className = document.getElementById('className').value.trim();
+    const schoolName = document.getElementById('schoolName').value.trim();
+    const cityName = document.getElementById('cityName').value.trim();
+    const schoolShift = document.getElementById('schoolShift').value;
+    const nickname = document.getElementById('nickname').value.trim();
+    const classID = document.getElementById('classID').textContent;
 
-        let hasError = false;
+    let hasError = false;
 
-        if (!className) {
-            document.getElementById('className').classList.add('error');
-            hasError = true;
+    if (!className) {
+        document.getElementById('className').classList.add('error');
+        hasError = true;
+    } else {
+        document.getElementById('className').classList.remove('error');
+    }
+
+    if (!schoolName) {
+        document.getElementById('schoolName').classList.add('error');
+        hasError = true;
+    } else {
+        document.getElementById('schoolName').classList.remove('error');
+    }
+
+    if (!cityName) {
+        document.getElementById('cityName').classList.add('error');
+        hasError = true;
+    } else {
+        document.getElementById('cityName').classList.remove('error');
+    }
+
+    if (!schoolShift) {
+        document.getElementById('schoolShift').classList.add('error');
+        hasError = true;
+    } else {
+        document.getElementById('schoolShift').classList.remove('error');
+    }
+
+    if (nickname.length < 2) {
+        document.getElementById('nickname').classList.add('error');
+        hasError = true;
+    } else {
+        document.getElementById('nickname').classList.remove('error');
+    }
+
+    if (hasError) {
+        return;
+    }
+
+    const data = {
+        appId: 'editClassParameters',
+        className: className,
+        schoolName: schoolName,
+        cityName: cityName,
+        schoolShift: schoolShift,
+        nickname: nickname,
+        classID: classID
+    };
+
+    try {
+        const response = await fetch('https://louse-precious-sincerely.ngrok-free.app/api/update/class', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        });
+
+        const result = await response.json();
+
+        if (response.ok && result.success) {
+            document.querySelector('.container h2').textContent = "Данные успешно обновлены!";
+            document.querySelector('.container h2').style.color = 'green';
+            document.querySelector('.container h2').style.display = 'block';
+            document.getElementById('form-content').style.display = 'none';
+            tg.MainButton.setText("Закрыть приложение");
+            tg.MainButton.onClick(tg.close);
         } else {
-            document.getElementById('className').classList.remove('error');
+            const errorMessage = document.getElementById('error-message');
+            errorMessage.textContent = result.error || "Произошла ошибка";
+            errorMessage.style.display = 'block';
+            errorMessage.style.animation = 'fadeIn 1s ease-in-out';
         }
-
-        if (!schoolName) {
-            document.getElementById('schoolName').classList.add('error');
-            hasError = true;
-        } else {
-            document.getElementById('schoolName').classList.remove('error');
-        }
-
-        if (!cityName) {
-            document.getElementById('cityName').classList.add('error');
-            hasError = true;
-        } else {
-            document.getElementById('cityName').classList.remove('error');
-        }
-
-        if (!schoolShift) {
-            document.getElementById('schoolShift').classList.add('error');
-            hasError = true;
-        } else {
-            document.getElementById('schoolShift').classList.remove('error');
-        }
-
-        if (nickname.length < 2) {
-            document.getElementById('nickname').classList.add('error');
-            hasError = true;
-        } else {
-            document.getElementById('nickname').classList.remove('error');
-        }
-
-        if (hasError) {
-            return;
-        }
-
-        const data = {
-            appId: 'editClassParameters',
-            className: className,
-            schoolName: schoolName,
-            cityName: cityName,
-            schoolShift: schoolShift,
-            nickname: nickname,
-            classID: classID
-        };
-
-        try {
-            const response = await fetch('https://louse-precious-sincerely.ngrok-free.app/api/update/class', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(data)
-            });
-
-            const result = await response.json();
-
-            if (result.success) {
-                // Успешное обновление
-                document.querySelector('.container h2').textContent = "Данные успешно обновлены!";
-                document.querySelector('.container h2').style.color = 'green';
-                document.querySelector('.container h2').style.display = 'block';
-                document.getElementById('form-content').style.display = 'none';
-                tg.MainButton.setText("Закрыть приложение");
-                tg.MainButton.onClick(tg.close);
-            } else {
-                // Ошибка обновления, никнейм уже существует
-                const errorMessage = document.getElementById('error-message');
-                errorMessage.textContent = "Такой никнейм уже существует. Попробуйте другой.";
-                errorMessage.style.display = 'block';
-                errorMessage.style.animation = 'fadeIn 1s ease-in-out';
-            }
-        } catch (error) {
-            console.error('Произошла ошибка при обновлении данных', error);
-        }
-    });
+    } catch (error) {
+        console.error('Произошла ошибка при обновлении данных', error);
+        const errorMessage = document.getElementById('error-message');
+        errorMessage.textContent = "Произошла ошибка при соединении с сервером. Попробуйте позже.";
+        errorMessage.style.display = 'block';
+        errorMessage.style.animation = 'fadeIn 1s ease-in-out';
+    }
+});
 
     function validateClassName() {
         const input = document.getElementById('className');
