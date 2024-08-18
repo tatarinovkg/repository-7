@@ -243,12 +243,12 @@
     };
 
     try {
-        const response = await fetch('https://louse-precious-sincerely.ngrok-free.app/api/update_class', {
+        const response = await fetch('https://louse-precious-sincerely.ngrok-free.app/api/updateClass', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(data)
+            body: JSON.stringify(className)
         });
 
         const result = await response.json();
