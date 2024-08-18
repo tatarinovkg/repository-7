@@ -192,13 +192,6 @@
     const nickname = document.getElementById('nickname').value;
     const classID = document.getElementById('classID').textContent;
 
-    console.log("Class Name:", className);
-    console.log("School Name:", schoolName);
-    console.log("City Name:", cityName);
-    console.log("School Shift:", schoolShift);
-    console.log("Nickname:", nickname);
-    console.log("Class ID:", classID);
-
     let hasError = false;
 
     if (!className) {
@@ -241,7 +234,6 @@
     }
 
     const data = {
-        appId: 'editClassParameters',
         className: className,
         schoolName: schoolName,
         cityName: cityName,
