@@ -183,9 +183,10 @@
     tg.expand();
     tg.MainButton.setText("Отправить");
     tg.MainButton.show();
-
-    let userId = tg.initDataUnsafe.user.id;
-    let userId = tg.initDataUnsafe.user.id;
+    
+    
+    let userId = window.Telegram.WebApp.initDataUnsafe.user.id;
+    
     const fetchOwnerData = async () => {
         try {
             const response = await fetch('https://louse-precious-sincerely.ngrok-free.app/api/check_owner', {
