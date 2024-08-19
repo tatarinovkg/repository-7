@@ -347,6 +347,7 @@
             const formContent = document.getElementById('form-content');
             const submitButton = document.querySelector('.submit-button');
 
+            // Внутри функции tg.MainButton.onClick
             if (result.success) {
                 // Успешное обновление
                 h2.textContent = "Данные успешно обновлены!";
@@ -355,13 +356,21 @@
                 h2.style.animation = 'fadeIn 0.5s ease-in-out';
                 formContent.style.animation = 'fadeOut 0.5s ease-in-out';
 
+                // Скрыть форму после анимации
                 setTimeout(() => {
                     formContent.style.display = 'none';
                 }, 500);
 
-                // Скрыть сообщение об ошибке и никнейм
-                document.getElementById('nickname-error').style.display = 'none';
+                // Убираем сообщение об ошибке, если оно было
+                const nicknameError = document.getElementById('nickname-error');
+                if (nicknameError) {
+                    nicknameError.style.animation = 'fadeOut 0.5s ease-in-out';
+                    setTimeout(() => {
+                        nicknameError.style.display = 'none';
+                    }, 500);
+                }
 
+                // Обновляем текст кнопки и добавляем функционал закрытия приложения
                 tg.MainButton.setText("Закрыть приложение");
                 tg.MainButton.onClick(tg.close);
             } else {
