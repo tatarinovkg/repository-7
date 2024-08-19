@@ -79,18 +79,7 @@
             margin-top: -5px;
             margin-bottom: 10px;
         }
-        .error-message {
-            color: red;
-            font-weight: bold;
-            display: none; /* Скрываем сообщение об ошибке по умолчанию */
-            margin-top: 20px;
-            animation: fadeIn 0.5s ease-in-out;
-        }
-
-        .error-message.fadeOut {
-            animation: fadeOut 0.5s ease-in-out;
-        }
-
+        .error-message,
         .nickname-error {
             color: red;
             font-weight: bold;
@@ -98,11 +87,10 @@
             margin-top: 5px;
             animation: fadeIn 0.5s ease-in-out;
         }
-
+        .error-message.fadeOut,
         .nickname-error.fadeOut {
             animation: fadeOut 0.5s ease-in-out;
         }
-
         .class-id-container {
             display: none; /* Скрываем контейнер по умолчанию */
             margin-top: 20px;
@@ -393,7 +381,6 @@
             console.error('Произошла ошибка при обновлении данных', error);
         }
     });
-
 
     function validateClassName() {
         const input = document.getElementById('className');
