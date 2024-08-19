@@ -363,7 +363,6 @@
                 // Успешное обновление
                 // Убираем сообщение об ошибке, если оно было
                 if (nicknameError) {
-                    nicknameError.classList.add('fadeOut');
                     setTimeout(() => {
                         nicknameError.style.display = 'none';
                     }, 500);
@@ -376,7 +375,7 @@
                     h2.style.display = 'block';
                     h2.style.animation = 'fadeIn 0.5s ease-in-out';
                 }
-
+                
                 formContent.style.animation = 'fadeOut 0.5s ease-in-out';
                 setTimeout(() => {
                     formContent.style.display = 'none';
