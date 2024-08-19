@@ -79,16 +79,18 @@
             margin-top: -5px;
             margin-bottom: 10px;
         }
-        .error-message,
+        .error-message {
+            color: red;
+            font-weight: bold;
+            display: none; /* Скрываем сообщение об ошибке по умолчанию */
+            margin-top: 20px;
+        }
         .nickname-error {
             color: red;
             font-weight: bold;
-            display: none; /* Скрываем сообщения об ошибках по умолчанию */
-            margin-top: 20px;
-            animation: fadeIn 0.5s ease-in-out;
-        }
-        .nickname-error {
+            display: none; /* Скрываем сообщение об ошибке по умолчанию */
             margin-top: 5px;
+            animation: fadeIn 0.5s ease-in-out;
         }
         .class-id-container {
             display: none; /* Скрываем контейнер по умолчанию */
@@ -156,7 +158,7 @@
 </head>
 <body>
 <div class="container">
-    <h2 id="success-message">Данные успешно обновлены!</h2>
+    <h2>Введите данные</h2>
     <div id="form-content">
         <div class="form-group">
             <label for="className">Введите название класса</label>
@@ -340,7 +342,7 @@
 
             const result = await response.json();
 
-            const h2 = document.querySelector('h2');
+            const h2 = document.querySelector('.container h2');
             const formContent = document.getElementById('form-content');
             const submitButton = document.querySelector('.submit-button');
 
@@ -365,18 +367,6 @@
                 errorMessage.textContent = "Такой никнейм уже существует. Попробуйте другой.";
                 errorMessage.style.display = 'block';
                 errorMessage.style.animation = 'fadeIn 0.5s ease-in-out';
-
-                // Скрыть форму и сообщения об ошибках
-                const formGroups = document.querySelectorAll('.form-group');
-                const submitButton = document.querySelector('.submit-button');
-                const nicknameError = document.getElementById('nickname-error');
-
-                formGroups.forEach(element => element.style.display = 'none');
-                submitButton.style.display = 'none';
-
-                setTimeout(() => {
-                    nicknameError.style.display = 'block';
-                }, 500);
             }
         } catch (error) {
             console.error('Произошла ошибка при обновлении данных', error);
