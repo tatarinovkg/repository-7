@@ -360,14 +360,10 @@
             const classIDContainer = document.querySelector('.class-id-container');
 
             if (result.success) {
-                // Успешное обновление
-                // Убираем сообщение об ошибке, если оно было
-                if (nicknameError) {
-                    nicknameError.style.animation = 'fadeOut 0.5s ease-in-out';
-                    setTimeout(() => {
-                        nicknameError.style.display = 'none';
-                    }, 500);
-                }
+                nicknameError.style.animation = 'fadeOut 0.5s ease-in-out';
+                setTimeout(() => {
+                    nicknameError.style.display = 'none';
+                }, 500);
 
                 // Обновляем параметры класса
                 if (h2) {
