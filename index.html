@@ -86,6 +86,11 @@
             margin-top: 20px;
             animation: fadeIn 0.5s ease-in-out;
         }
+
+        .error-message.fadeOut {
+            animation: fadeOut 0.5s ease-in-out;
+        }
+
         .nickname-error {
             color: red;
             font-weight: bold;
@@ -93,6 +98,11 @@
             margin-top: 5px;
             animation: fadeIn 0.5s ease-in-out;
         }
+
+        .nickname-error.fadeOut {
+            animation: fadeOut 0.5s ease-in-out;
+        }
+
         .class-id-container {
             display: none; /* Скрываем контейнер по умолчанию */
             margin-top: 20px;
@@ -346,29 +356,48 @@
             const h2 = document.querySelector('.container h2');
             const formContent = document.getElementById('form-content');
             const submitButton = document.querySelector('.submit-button');
+            const nicknameError = document.getElementById('nickname-error');
+            const classIDContainer = document.querySelector('.class-id-container');
 
-            // Внутри функции tg.MainButton.onClick
             if (result.success) {
                 // Успешное обновление
-                h2.textContent = "Данные успешно обновлены!";
-                h2.style.color = 'green';
-                h2.style.display = 'block';
-                h2.style.animation = 'fadeIn 0.5s ease-in-out';
-                formContent.style.animation = 'fadeOut 0.5s ease-in-out';
-
-                // Скрыть форму после анимации
-                setTimeout(() => {
-                    formContent.style.display = 'none';
-                }, 500);
-
                 // Убираем сообщение об ошибке, если оно было
-                const nicknameError = document.getElementById('nickname-error');
                 if (nicknameError) {
-                    nicknameError.style.animation = 'fadeOut 0.5s ease-in-out';
+                    nicknameError.classList.add('fadeOut');
                     setTimeout(() => {
                         nicknameError.style.display = 'none';
                     }, 500);
                 }
+
+                // Обновляем параметры класса
+                if (h2) {
+                    h2.textContent = "Новые параметры класса:";
+                    h2.style.color = 'green';
+                    h2.style.display = 'block';
+                    h2.style.animation = 'fadeIn 0.5s ease-in-out';
+                }
+
+                // Отображаем обновленные данные
+                document.getElementById('className').value = result.data.class;
+                document.getElementById('schoolName').value = result.data.school;
+                document.getElementById('cityName').value = result.data.city;
+                document.getElementById('schoolShift').value = result.data.shift;
+                document.getElementById('nickname').value = result.data.nickname;
+
+                // Обновляем значение classID и отображаем его
+                if (classIDContainer) {
+                    const classIDSpan = document.getElementById('classID');
+                    classIDSpan.textContent = result.data.classID;
+                    classIDContainer.style.display = 'block';
+                    classIDContainer.style.opacity = 1;
+                    classIDContainer.style.transform = 'translateY(0)';
+                    classIDContainer.style.animation = 'fadeInUp 0.5s ease-in-out';
+                }
+
+                formContent.style.animation = 'fadeOut 0.5s ease-in-out';
+                setTimeout(() => {
+                    formContent.style.display = 'none';
+                }, 500);
 
                 // Обновляем текст кнопки и добавляем функционал закрытия приложения
                 tg.MainButton.setText("Закрыть приложение");
@@ -385,6 +414,7 @@
             console.error('Произошла ошибка при обновлении данных', error);
         }
     });
+
 
     function validateClassName() {
         const input = document.getElementById('className');
