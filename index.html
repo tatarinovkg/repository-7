@@ -309,6 +309,7 @@
 
         if (nickname.length < 2) {
             document.getElementById('nickname').classList.add('error');
+            document.getElementById('nickname-error').textContent = "Никнейм слишком короткий.";
             document.getElementById('nickname-error').style.display = 'block';
             hasError = true;
         } else {
@@ -361,6 +362,7 @@
                 tg.MainButton.onClick(tg.close);
             } else {
                 // Ошибка обновления, никнейм уже существует
+                document.getElementById('nickname').classList.add('error');
                 const errorMessage = document.getElementById('error-message');
                 errorMessage.textContent = "Такой никнейм уже существует. Попробуйте другой.";
                 errorMessage.style.display = 'block';
