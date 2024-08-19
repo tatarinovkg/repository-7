@@ -374,20 +374,14 @@
                 formContent.style.animation = 'fadeOut 0.5s ease-in-out';
                 setTimeout(() => {
                     formContent.style.display = 'none';
-
-                    // Обновляем информацию о классе после скрытия формы
-                    if (classInfo) {
-                        classInfo.innerHTML = `
+                    
                     <p><strong>Название класса:</strong> ${data.className}</p>
                     <p><strong>Название школы:</strong> ${data.schoolName}</p>
                     <p><strong>Город:</strong> ${data.cityName}</p>
                     <p><strong>Смена:</strong> ${data.schoolShift === '1' ? '1-ая смена' : '2-ая смена'}</p>
                     <p><strong>Никнейм:</strong> ${data.nickname}</p>
                     <p><strong>ClassID:</strong> ${data.classID}</p>
-                `;
-
-                        classInfo.style.display = 'block';
-                    }
+                    
 
                     // Обновляем текст кнопки и добавляем функционал закрытия приложения
                     tg.MainButton.setText("Закрыть приложение");
