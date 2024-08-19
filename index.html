@@ -84,6 +84,7 @@
             font-weight: bold;
             display: none; /* Скрываем сообщение об ошибке по умолчанию */
             margin-top: 20px;
+            animation: fadeIn 0.5s ease-in-out;
         }
         .nickname-error {
             color: red;
@@ -357,6 +358,9 @@
                 setTimeout(() => {
                     formContent.style.display = 'none';
                 }, 500);
+
+                // Скрыть сообщение об ошибке и никнейм
+                document.getElementById('nickname-error').style.display = 'none';
 
                 tg.MainButton.setText("Закрыть приложение");
                 tg.MainButton.onClick(tg.close);
