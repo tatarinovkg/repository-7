@@ -104,6 +104,16 @@
             color: #333;
             font-weight: bold;
         }
+        .class-info {
+            margin-top: 20px;
+            font-size: 16px;
+            font-weight: bold;
+            color: #333;
+            display: none; /* Скрываем информацию по умолчанию */
+        }
+        .class-info p {
+            margin: 10px 0;
+        }
         @keyframes fadeIn {
             from {
                 opacity: 0;
@@ -189,6 +199,14 @@
         <div class="class-id-container">
             <h3>ClassID вашего класса: <span id="classID"></span></h3>
         </div>
+        <!-- Новый элемент для отображения информации о классе -->
+        <div id="classInfo" class="class-info">
+            <p id="classNameInfo">Название класса: <span id="classNameText"></span></p>
+            <p id="schoolNameInfo">Название школы: <span id="schoolNameText"></span></p>
+            <p id="cityNameInfo">Название города: <span id="cityNameText"></span></p>
+            <p id="schoolShiftInfo">Смена класса: <span id="schoolShiftText"></span></p>
+            <p id="nicknameInfo">Никнейм: <span id="nicknameText"></span></p>
+        </div>
     </div>
     <div id="error-message" class="error-message">Произошла ошибка, попробуйте позже</div>
     <div id="not-owner-message" class="error-message">Вы не являетесь владельцем класса</div>
@@ -220,6 +238,7 @@
             const notOwnerMessage = document.getElementById('not-owner-message');
             const classIDSpan = document.getElementById('classID');
             const classIDContainer = document.querySelector('.class-id-container');
+            const classInfo = document.getElementById('classInfo');
 
             if (data.is_owner) {
                 // Если пользователь владелец, подставляем данные в поля
@@ -235,6 +254,17 @@
                     classIDContainer.style.display = 'block';
                     classIDContainer.style.opacity = 1; // Делаем видимым сразу
                     classIDContainer.style.transform = 'translateY(0)'; // Убираем смещение
+                }
+
+                if (classInfo) {
+                    document.getElementById('classNameText').textContent = data.data.class;
+                    document.getElementById('schoolNameText').textContent = data.data.school;
+                    document.getElementById('cityNameText').textContent = data.data.city;
+                    document.getElementById('schoolShiftText').textContent = data.data.shift === '1' ? '1-ая смена' : '2-ая смена';
+                    document.getElementById('nicknameText').textContent = data.data.nickname;
+                    classInfo.style.display = 'block'; // Показать информацию
+                    classInfo.style.opacity = 0; // Начальная непрозрачность
+                    classInfo.style.animation = 'fadeIn 1s ease-in-out forwards'; // Анимация появления
                 }
 
                 if (h2) h2.style.display = 'block';
@@ -341,6 +371,7 @@
             const submitButton = document.querySelector('.submit-button');
             const classIDContainer = document.querySelector('.class-id-container');
             const instructions = document.getElementById('instructions');
+            const classInfo = document.getElementById('classInfo');
 
             if (result.success) {
                 // Обновляем параметры класса
@@ -349,6 +380,18 @@
                     h2.style.color = 'green';
                     h2.style.display = 'block';
                     h2.style.animation = 'fadeIn 0.5s ease-in-out';
+                }
+
+                // Обновляем информацию о классе
+                if (classInfo) {
+                    document.getElementById('classNameText').textContent = data.className;
+                    document.getElementById('schoolNameText').textContent = data.schoolName;
+                    document.getElementById('cityNameText').textContent = data.cityName;
+                    document.getElementById('schoolShiftText').textContent = data.schoolShift === '1' ? '1-ая смена' : '2-ая смена';
+                    document.getElementById('nicknameText').textContent = data.nickname;
+                    classInfo.style.display = 'block'; // Показать информацию
+                    classInfo.style.opacity = 0; // Начальная непрозрачность
+                    classInfo.style.animation = 'fadeIn 1s ease-in-out forwards'; // Анимация появления
                 }
 
                 formContent.style.animation = 'fadeOut 0.5s ease-in-out';
