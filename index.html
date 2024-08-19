@@ -104,13 +104,25 @@
             color: #333;
             font-weight: bold;
         }
+        .form-content {
+            transition: opacity 0.5s ease-in-out;
+        }
+
         .class-info {
             margin-top: 20px;
             font-size: 16px;
             font-weight: bold;
             color: #333;
-            display: none; /* Скрываем информацию по умолчанию */
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
         }
+
+        .class-info.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
         .class-info p {
             margin: 10px 0;
         }
@@ -358,12 +370,10 @@
             const h2 = document.querySelector('.container h2');
             const formContent = document.getElementById('form-content');
             const submitButton = document.querySelector('.submit-button');
-            const classIDContainer = document.querySelector('.class-id-container');
-            const instructions = document.getElementById('instructions');
             const classInfo = document.getElementById('classInfo');
+            const instructions = document.getElementById('instructions');
 
             if (result.success) {
-                // Обновляем параметры класса
                 if (h2) {
                     h2.textContent = "Параметры класса обновлены";
                     h2.style.color = 'green';
@@ -380,21 +390,17 @@
                     <p><strong>Никнейм:</strong> ${data.nickname}</p>
                     <p><strong>ClassID:</strong> ${data.classID}</p>
                 `;
-                    classInfo.style.display = 'block';
-                    classInfo.style.opacity = 0;
-                    classInfo.style.animation = 'fadeIn 0.5s ease-in-out';
+                    classInfo.classList.add('visible');
                 }
 
-                formContent.style.animation = 'fadeOut 0.5s ease-in-out';
+                formContent.style.opacity = 0;
                 setTimeout(() => {
                     formContent.style.display = 'none';
                 }, 500);
 
-                // Обновляем текст кнопки и добавляем функционал закрытия приложения
                 tg.MainButton.setText("Закрыть приложение");
                 tg.MainButton.onClick(tg.close);
             } else {
-                // Ошибка обновления, никнейм уже существует
                 instructions.textContent = "Такой никнейм уже существует. Попробуйте другой.";
                 instructions.classList.add('error');
             }
@@ -402,6 +408,7 @@
             console.error('Произошла ошибка при обновлении данных', error);
         }
     });
+
 
     function validateClassName() {
         const input = document.getElementById('className');
