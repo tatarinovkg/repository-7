@@ -105,11 +105,13 @@
             font-weight: bold;
         }
         .class-info {
+            display: none; /* Скрываем информацию по умолчанию */
+            opacity: 0; /* Начальная непрозрачность */
+            animation: fadeIn 1s ease-in-out forwards; /* Анимация появления */
             margin-top: 20px;
             font-size: 16px;
             font-weight: bold;
             color: #333;
-            display: none; /* Скрываем информацию по умолчанию */
         }
         .class-info p {
             margin: 10px 0;
@@ -210,6 +212,7 @@
     </div>
     <div id="error-message" class="error-message">Произошла ошибка, попробуйте позже</div>
     <div id="not-owner-message" class="error-message">Вы не являетесь владельцем класса</div>
+    <button class="submit-button">Отправить</button>
 </div>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <script>
@@ -234,67 +237,80 @@
             const h2 = document.querySelector('h2');
             const formGroups = document.querySelectorAll('.form-group');
             const submitButton = document.querySelector('.submit-button');
-            const errorMessage = document.getElementById('error-message');
-            const notOwnerMessage = document.getElementById('not-owner-message');
-            const classIDSpan = document.getElementById('classID');
             const classIDContainer = document.querySelector('.class-id-container');
-            const classInfo = document.getElementById('classInfo');
 
-            if (data.is_owner) {
-                // Если пользователь владелец, подставляем данные в поля
-                document.getElementById('className').value = data.data.class;
-                document.getElementById('schoolName').value = data.data.school;
-                document.getElementById('cityName').value = data.data.city;
-                document.getElementById('schoolShift').value = data.data.shift;
-                document.getElementById('nickname').value = data.data.nickname;
-
-                // Устанавливаем значение classID и отображаем его
-                if (classIDSpan) {
-                    classIDSpan.textContent = data.data.classID;
-                    classIDContainer.style.display = 'block';
-                    classIDContainer.style.opacity = 1; // Делаем видимым сразу
-                    classIDContainer.style.transform = 'translateY(0)'; // Убираем смещение
-                }
-
-                if (classInfo) {
-                    document.getElementById('classNameText').textContent = data.data.class;
-                    document.getElementById('schoolNameText').textContent = data.data.school;
-                    document.getElementById('cityNameText').textContent = data.data.city;
-                    document.getElementById('schoolShiftText').textContent = data.data.shift === '1' ? '1-ая смена' : '2-ая смена';
-                    document.getElementById('nicknameText').textContent = data.data.nickname;
-                    classInfo.style.display = 'block'; // Показать информацию
-                    classInfo.style.opacity = 0; // Начальная непрозрачность
-                    classInfo.style.animation = 'fadeIn 1s ease-in-out forwards'; // Анимация появления
-                }
-
-                if (h2) h2.style.display = 'block';
-                formGroups.forEach(element => element.style.display = 'block');
-                if (submitButton) submitButton.style.display = 'block';
-                if (errorMessage) errorMessage.style.display = 'none';
-                if (notOwnerMessage) notOwnerMessage.style.display = 'none';
+            if (data.isOwner) {
+                h2.style.display = 'block';
+                formGroups.forEach(group => group.style.display = 'block');
+                submitButton.style.display = 'block';
+                classIDContainer.style.display = 'block'; // Показываем classID контейнер
+                document.getElementById('classID').textContent = data.classID; // Устанавливаем classID
             } else {
-                if (h2) h2.style.display = 'none';
-                formGroups.forEach(element => element.style.display = 'none');
-                if (submitButton) submitButton.style.display = 'none';
-                if (notOwnerMessage) notOwnerMessage.style.display = 'block';
-                if (errorMessage) errorMessage.style.display = 'none';
+                document.getElementById('not-owner-message').style.display = 'block';
+                tg.MainButton.setText("Закрыть приложение");
+                tg.MainButton.onClick(tg.close);
             }
         } catch (error) {
-            const h2 = document.querySelector('h2');
-            const formGroups = document.querySelectorAll('.form-group');
-            const submitButton = document.querySelector('.submit-button');
-            const errorMessage = document.getElementById('error-message');
-            const notOwnerMessage = document.getElementById('not-owner-message');
-
-            if (h2) h2.style.display = 'none';
-            formGroups.forEach(element => element.style.display = 'none');
-            if (submitButton) submitButton.style.display = 'none';
-            if (errorMessage) errorMessage.style.display = 'block';
-            if (notOwnerMessage) notOwnerMessage.style.display = 'none';
+            console.error('Произошла ошибка при проверке владельца', error);
         }
     };
 
     fetchOwnerData();
+
+    function validateClassName() {
+        const className = document.getElementById('className').value;
+        const errorElement = document.getElementById('className').classList;
+        if (!className) {
+            errorElement.add('error');
+        } else {
+            errorElement.remove('error');
+        }
+    }
+
+    function validateSchoolName() {
+        const schoolName = document.getElementById('schoolName').value;
+        const errorElement = document.getElementById('schoolName').classList;
+        if (!schoolName) {
+            errorElement.add('error');
+        } else {
+            errorElement.remove('error');
+        }
+    }
+
+    function validateCityName() {
+        const cityName = document.getElementById('cityName').value;
+        const errorElement = document.getElementById('cityName').classList;
+        if (!cityName) {
+            errorElement.add('error');
+        } else {
+            errorElement.remove('error');
+        }
+    }
+
+    function validateSchoolShift() {
+        const schoolShift = document.getElementById('schoolShift').value;
+        const errorElement = document.getElementById('schoolShift').classList;
+        if (!schoolShift) {
+            errorElement.add('error');
+        } else {
+            errorElement.remove('error');
+        }
+    }
+
+    function ensureValidChars() {
+        const nickname = document.getElementById('nickname').value;
+        const regex = /^[a-zA-Z0-9_]*$/;
+        if (!regex.test(nickname)) {
+            document.getElementById('nickname').value = nickname.slice(0, -1);
+        }
+    }
+
+    function handleEnter(event) {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            document.querySelector('.submit-button').click();
+        }
+    }
 
     tg.MainButton.onClick(async function() {
         const className = document.getElementById('className').value;
@@ -394,12 +410,12 @@
                     classInfo.style.animation = 'fadeIn 1s ease-in-out forwards'; // Анимация появления
                 }
 
+                // Скрыть форму и показать кнопку закрытия
                 formContent.style.animation = 'fadeOut 0.5s ease-in-out';
                 setTimeout(() => {
                     formContent.style.display = 'none';
                 }, 500);
 
-                // Обновляем текст кнопки и добавляем функционал закрытия приложения
                 tg.MainButton.setText("Закрыть приложение");
                 tg.MainButton.onClick(tg.close);
             } else {
@@ -411,52 +427,6 @@
             console.error('Произошла ошибка при обновлении данных', error);
         }
     });
-
-    function validateClassName() {
-        const input = document.getElementById('className');
-        let value = input.value;
-        value = value.replace(/^\s+/, '').replace(/\s{2,}/g, ' ');
-        input.value = value;
-    }
-
-    function validateSchoolName() {
-        const input = document.getElementById('schoolName');
-        let value = input.value;
-        value = value.replace(/^\s+/, '').replace(/\s{2,}/g, ' ');
-        input.value = value;
-    }
-
-    function validateCityName() {
-        const input = document.getElementById('cityName');
-        let value = input.value;
-        value = value.replace(/^\s+/, '').replace(/\s{2,}/g, ' ');
-        input.value = value;
-    }
-
-    function validateSchoolShift() {
-        const select = document.getElementById('schoolShift');
-        if (select.value === "") {
-            select.classList.add('error');
-        } else {
-            select.classList.remove('error');
-        }
-    }
-
-    function ensureValidChars() {
-        const nicknameInput = document.getElementById('nickname');
-        let value = nicknameInput.value;
-
-        // Удалить все символы, кроме латиницы, цифр и подчеркивания, и следить за максимальной длиной
-        value = '@' + value.slice(1).replace(/[^a-zA-Z0-9_]/g, '').slice(0, 15);
-
-        nicknameInput.value = value;
-    }
-
-    function handleEnter(event) {
-        if (event.key === "Enter") {
-            event.target.blur(); // Скрыть клавиатуру после нажатия Enter
-        }
-    }
 </script>
 </body>
 </html>
