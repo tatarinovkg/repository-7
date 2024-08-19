@@ -199,14 +199,6 @@
         <div class="class-id-container">
             <h3>ClassID вашего класса: <span id="classID"></span></h3>
         </div>
-        <!-- Новый элемент для отображения информации о классе -->
-        <div id="classInfo" class="class-info">
-            <p id="classNameInfo">Название класса: <span id="classNameText"></span></p>
-            <p id="schoolNameInfo">Название школы: <span id="schoolNameText"></span></p>
-            <p id="cityNameInfo">Название города: <span id="cityNameText"></span></p>
-            <p id="schoolShiftInfo">Смена класса: <span id="schoolShiftText"></span></p>
-            <p id="nicknameInfo">Никнейм: <span id="nicknameText"></span></p>
-        </div>
     </div>
     <div id="error-message" class="error-message">Произошла ошибка, попробуйте позже</div>
     <div id="not-owner-message" class="error-message">Вы не являетесь владельцем класса</div>
@@ -238,7 +230,6 @@
             const notOwnerMessage = document.getElementById('not-owner-message');
             const classIDSpan = document.getElementById('classID');
             const classIDContainer = document.querySelector('.class-id-container');
-            const classInfo = document.getElementById('classInfo');
 
             if (data.is_owner) {
                 // Если пользователь владелец, подставляем данные в поля
@@ -357,6 +348,9 @@
 
             const h2 = document.querySelector('.container h2');
             const formContent = document.getElementById('form-content');
+            const submitButton = document.querySelector('.submit-button');
+            const classIDContainer = document.querySelector('.class-id-container');
+            const instructions = document.getElementById('instructions');
             const classInfo = document.getElementById('classInfo');
 
             if (result.success) {
@@ -367,15 +361,6 @@
                     h2.style.display = 'block';
                     h2.style.animation = 'fadeIn 0.5s ease-in-out';
                 }
-
-                // Отображаем информацию о классе
-                document.getElementById('classNameText').textContent = className;
-                document.getElementById('schoolNameText').textContent = schoolName;
-                document.getElementById('cityNameText').textContent = cityName;
-                document.getElementById('schoolShiftText').textContent = schoolShift === '1' ? '1-ая смена' : '2-ая смена';
-                document.getElementById('nicknameText').textContent = nickname;
-                classInfo.style.display = 'block';
-                classInfo.style.animation = 'fadeIn 0.5s ease-in-out';
 
                 formContent.style.animation = 'fadeOut 0.5s ease-in-out';
                 setTimeout(() => {
