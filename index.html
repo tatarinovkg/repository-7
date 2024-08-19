@@ -370,7 +370,7 @@
                     h2.style.display = 'block';
                     h2.style.animation = 'fadeIn 0.5s ease-in-out';
                 }
-                
+
                 if (classInfo) {
                     classInfo.innerHTML = `
                     <p><strong>Название класса:</strong> ${data.className}</p>
@@ -378,12 +378,13 @@
                     <p><strong>Город:</strong> ${data.cityName}</p>
                     <p><strong>Смена:</strong> ${data.schoolShift === '1' ? '1-ая смена' : '2-ая смена'}</p>
                     <p><strong>Никнейм:</strong> ${data.nickname}</p>
+                    <p><strong>ClassID:</strong> ${data.classID}</p>
                 `;
                     classInfo.style.display = 'block';
                     classInfo.style.opacity = 0;
-                    classInfo.style.animation = 'fadeIn 1s ease-in-out forwards';
+                    classInfo.style.animation = 'fadeIn 0.5s ease-in-out';
                 }
-                
+
                 formContent.style.animation = 'fadeOut 0.5s ease-in-out';
                 setTimeout(() => {
                     formContent.style.display = 'none';
