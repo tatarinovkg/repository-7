@@ -79,16 +79,14 @@
             margin-top: -5px;
             margin-bottom: 10px;
         }
-        .error-message,
-        .nickname-error {
+        .error-message {
             color: red;
             font-weight: bold;
             display: none; /* Скрываем сообщение об ошибке по умолчанию */
             margin-top: 5px;
             animation: fadeIn 0.5s ease-in-out;
         }
-        .error-message.fadeOut,
-        .nickname-error.fadeOut {
+        .error-message.fadeOut {
             animation: fadeOut 0.5s ease-in-out;
         }
         .class-id-container {
@@ -181,7 +179,7 @@
         </div>
         <div class="form-group">
             <label for="nickname">Введите никнейм</label>
-            <div class="instructions">Используйте только латинские буквы, цифры и подчеркивание (_). Никнейм слишком короткий.</div>
+            <div class="instructions">Используйте только латинские буквы, цифры и подчеркивание (_). Никнейм должен содержать от 2 до 16 символов.</div>
             <input type="text" id="nickname" name="nickname" maxlength="16" oninput="ensureValidChars()" value="@" onkeydown="handleEnter(event)">
         </div>
         <!-- Новый элемент для отображения classID -->
