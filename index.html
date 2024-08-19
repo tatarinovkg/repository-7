@@ -85,6 +85,13 @@
             display: none; /* Скрываем сообщение об ошибке по умолчанию */
             margin-top: 20px;
         }
+        .nickname-error {
+            color: red;
+            font-weight: bold;
+            display: none; /* Скрываем сообщение об ошибке по умолчанию */
+            margin-top: 5px;
+            animation: fadeIn 0.5s ease-in-out;
+        }
         .class-id-container {
             display: none; /* Скрываем контейнер по умолчанию */
             margin-top: 20px;
@@ -115,6 +122,16 @@
             to {
                 opacity: 1;
                 transform: translateY(0);
+            }
+        }
+        @keyframes fadeOut {
+            from {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            to {
+                opacity: 0;
+                transform: translateY(20px);
             }
         }
         @media (max-width: 600px) {
@@ -167,6 +184,7 @@
             <label for="nickname">Введите никнейм</label>
             <div class="instructions">Используйте только латинские буквы, цифры и подчеркивание (_).</div>
             <input type="text" id="nickname" name="nickname" maxlength="16" oninput="ensureValidChars()" value="@" onkeydown="handleEnter(event)">
+            <div id="nickname-error" class="nickname-error">Такой никнейм уже существует. Попробуйте другой.</div>
         </div>
         <!-- Новый элемент для отображения classID -->
         <div class="class-id-container">
@@ -291,9 +309,11 @@
 
         if (nickname.length < 2) {
             document.getElementById('nickname').classList.add('error');
+            document.getElementById('nickname-error').style.display = 'block';
             hasError = true;
         } else {
             document.getElementById('nickname').classList.remove('error');
+            document.getElementById('nickname-error').style.display = 'none';
         }
 
         if (hasError) {
@@ -321,12 +341,22 @@
 
             const result = await response.json();
 
+            const h2 = document.querySelector('.container h2');
+            const formContent = document.getElementById('form-content');
+            const submitButton = document.querySelector('.submit-button');
+
             if (result.success) {
                 // Успешное обновление
-                document.querySelector('.container h2').textContent = "Данные успешно обновлены!";
-                document.querySelector('.container h2').style.color = 'green';
-                document.querySelector('.container h2').style.display = 'block';
-                document.getElementById('form-content').style.display = 'none';
+                h2.textContent = "Данные успешно обновлены!";
+                h2.style.color = 'green';
+                h2.style.display = 'block';
+                h2.style.animation = 'fadeIn 0.5s ease-in-out';
+                formContent.style.animation = 'fadeOut 0.5s ease-in-out';
+
+                setTimeout(() => {
+                    formContent.style.display = 'none';
+                }, 500);
+
                 tg.MainButton.setText("Закрыть приложение");
                 tg.MainButton.onClick(tg.close);
             } else {
@@ -334,7 +364,7 @@
                 const errorMessage = document.getElementById('error-message');
                 errorMessage.textContent = "Такой никнейм уже существует. Попробуйте другой.";
                 errorMessage.style.display = 'block';
-                errorMessage.style.animation = 'fadeIn 1s ease-in-out';
+                errorMessage.style.animation = 'fadeIn 0.5s ease-in-out';
             }
         } catch (error) {
             console.error('Произошла ошибка при обновлении данных', error);
