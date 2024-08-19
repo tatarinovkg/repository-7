@@ -371,27 +371,10 @@
 
                 // Обновляем параметры класса
                 if (h2) {
-                    h2.textContent = "Новые параметры класса:";
+                    h2.textContent = "Параметры класса обновлены";
                     h2.style.color = 'green';
                     h2.style.display = 'block';
                     h2.style.animation = 'fadeIn 0.5s ease-in-out';
-                }
-
-                // Отображаем обновленные данные
-                document.getElementById('className').value = result.data.class;
-                document.getElementById('schoolName').value = result.data.school;
-                document.getElementById('cityName').value = result.data.city;
-                document.getElementById('schoolShift').value = result.data.shift;
-                document.getElementById('nickname').value = result.data.nickname;
-
-                // Обновляем значение classID и отображаем его
-                if (classIDContainer) {
-                    const classIDSpan = document.getElementById('classID');
-                    classIDSpan.textContent = result.data.classID;
-                    classIDContainer.style.display = 'block';
-                    classIDContainer.style.opacity = 1;
-                    classIDContainer.style.transform = 'translateY(0)';
-                    classIDContainer.style.animation = 'fadeInUp 0.5s ease-in-out';
                 }
 
                 formContent.style.animation = 'fadeOut 0.5s ease-in-out';
