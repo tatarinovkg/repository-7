@@ -79,17 +79,8 @@
             margin-top: -5px;
             margin-bottom: 10px;
         }
-        .error-message,
-        .nickname-error {
+        .instructions.error {
             color: red;
-            font-weight: bold;
-            display: none; /* Скрываем сообщение об ошибке по умолчанию */
-            margin-top: 5px;
-            animation: fadeIn 0.5s ease-in-out;
-        }
-        .error-message.fadeOut,
-        .nickname-error.fadeOut {
-            animation: fadeOut 0.5s ease-in-out;
         }
         .class-id-container {
             display: none; /* Скрываем контейнер по умолчанию */
@@ -181,9 +172,8 @@
         </div>
         <div class="form-group">
             <label for="nickname">Введите никнейм</label>
-            <div class="instructions">Используйте только латинские буквы, цифры и подчеркивание (_).</div>
+            <div id="nickname-instructions" class="instructions">Используйте только латинские буквы, цифры и подчеркивание (_).</div>
             <input type="text" id="nickname" name="nickname" maxlength="16" oninput="ensureValidChars()" value="@" onkeydown="handleEnter(event)">
-            <div id="nickname-error" class="nickname-error">Такой никнейм уже существует. Попробуйте другой.</div>
         </div>
         <!-- Новый элемент для отображения classID -->
         <div class="class-id-container">
@@ -306,12 +296,13 @@
 
         if (nickname.length < 2) {
             document.getElementById('nickname').classList.add('error');
-            document.getElementById('nickname-error').textContent = "Никнейм слишком короткий.";
-            document.getElementById('nickname-error').style.display = 'block';
+            document.getElementById('nickname-instructions').textContent = "Никнейм слишком короткий.";
+            document.getElementById('nickname-instructions').classList.add('error');
             hasError = true;
         } else {
             document.getElementById('nickname').classList.remove('error');
-            document.getElementById('nickname-error').style.display = 'none';
+            document.getElementById('nickname-instructions').classList.remove('error');
+            document.getElementById('nickname-instructions').textContent = "Используйте только латинские буквы, цифры и подчеркивание (_).";
         }
 
         if (hasError) {
@@ -342,14 +333,12 @@
             const h2 = document.querySelector('.container h2');
             const formContent = document.getElementById('form-content');
             const submitButton = document.querySelector('.submit-button');
-            const nicknameError = document.getElementById('nickname-error');
+            const nicknameInstructions = document.getElementById('nickname-instructions');
             const classIDContainer = document.querySelector('.class-id-container');
 
             if (result.success) {
-                nicknameError.style.animation = 'fadeOut 0.5s ease-in-out';
-                setTimeout(() => {
-                    nicknameError.style.display = 'none';
-                }, 500);
+                nicknameInstructions.classList.remove('error');
+                nicknameInstructions.textContent = "Используйте только латинские буквы, цифры и подчеркивание (_).";
 
                 // Обновляем параметры класса
                 if (h2) {
@@ -374,6 +363,9 @@
                 errorMessage.textContent = "Такой никнейм уже существует. Попробуйте другой.";
                 errorMessage.style.display = 'block';
                 errorMessage.style.animation = 'fadeIn 0.5s ease-in-out';
+
+                nicknameInstructions.classList.add('error');
+                nicknameInstructions.textContent = "Такой никнейм уже существует. Попробуйте другой.";
             }
         } catch (error) {
             console.error('Произошла ошибка при обновлении данных', error);
